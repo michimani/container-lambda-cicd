@@ -70,7 +70,7 @@ jobs:
           --output text)
         docker tag \
         container-lambda-function:latest \
-        "${AWS_ACCOUNT_ID}".dkr.ecr.ap-northeast-1.amazonaws.com/container-lambda-function-repository:latest
+        "${AWS_ACCOUNT_ID}".dkr.ecr.ap-northeast-1.amazonaws.com/container-lambda-function-repository:dev
 
     - name: Push to ECR
       run: |
