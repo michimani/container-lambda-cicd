@@ -1,0 +1,56 @@
+name: lambda-test
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '**.go'
+      - 'go.mod'
+  pull_request:
+    branches:
+      - '**'
+    paths:
+      - '**.go'
+      - 'go.mod'
+      - '.github/**/*.yml'
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set up Go 1.19
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.19
+
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v3
+
+    - name: Get dependencies
+      working-directory: ./lambda
+      run: go install
+
+    - name: Test code
+      working-directory: ./lambda
+      run: go test -race ./... -shuffle=on
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set up Go 1.19
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.19
+
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v3
+
+    - name: Get dependencies
+      working-directory: ./lambda
+      run: go install
+
+    - name: Test code
+      working-directory: ./lambda
+      run: go build .
