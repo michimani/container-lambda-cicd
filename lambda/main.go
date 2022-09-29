@@ -1,8 +1,8 @@
 package main
 
 import (
+	"containerlambda/util"
 	"context"
-	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -15,14 +15,14 @@ type Response struct {
 	StatusCode int    `json:"statusCode"`
 }
 
-const message = "Hello Container Lambda!"
-
 func handleRequest(ctx context.Context) (Response, error) {
 	log.Println("start handler")
 	defer log.Println("end handler")
 
+	message := util.NewMessage(time.Now())
+
 	return Response{
-		Message:    fmt.Sprintf("[%s] %s", time.Now().Format(time.RFC3339), message),
+		Message:    message,
 		StatusCode: http.StatusOK,
 	}, nil
 }
