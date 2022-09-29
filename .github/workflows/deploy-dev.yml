@@ -46,16 +46,15 @@ jobs:
 
     - name: Docker Login (to ECR)
       run: |
-        REGION='ap-northeast-1'
         AWS_ACCOUNT_ID=$(
           aws sts get-caller-identity \
           --query 'Account' \
           --output text) \
         && aws ecr get-login-password \
-          --region "${REGION}" \
+          --region "${AWS_DEFAULT_REGION}" \
           | docker login \
           --username AWS \
-          --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com
+          --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com
 
     - name: Docker Build
       working-directory: ./lambda
@@ -79,10 +78,10 @@ jobs:
           --query 'Account' \
           --output text)
         aws ecr get-login-password \
-          --region "${REGION}" \
+          --region "${AWS_DEFAULT_REGION}" \
           | docker login \
           --username AWS \
-          --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com
+          --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com
         docker push "${AWS_ACCOUNT_ID}".dkr.ecr.ap-northeast-1.amazonaws.com/container-lambda-function-repository:dev
 
   deploy-dev:
