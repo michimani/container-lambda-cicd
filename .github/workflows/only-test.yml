@@ -30,4 +30,4 @@ jobs:
       run: go install
 
     - name: Test code
-      run: go test -race github.com/michimani/container-lambda/... -shuffle=on
+      run: go test -race github.com/michimani/container-lambda-cicd/... -shuffle=on
