@@ -38,7 +38,7 @@ jobs:
       uses: aws-actions/configure-aws-credentials@master
       with:
         role-to-assume: arn:aws:iam::699028004073:role/demo/gha-role-for-container-lambda
-        session-name: GitHubActions-${{ github.run_id }}
+        role-session-name: GitHubActions-${{ github.run_id }}
         aws-region: ap-northeast-1
 
     - name: Set up Docker Buildx
