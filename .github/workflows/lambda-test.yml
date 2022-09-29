@@ -1,4 +1,4 @@
-name: onlytest
+name: lambda-test
 on:
   push:
     branches:
@@ -28,6 +28,7 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Get dependencies
+      run: cd lambda
       run: go install
 
     - name: Test code
