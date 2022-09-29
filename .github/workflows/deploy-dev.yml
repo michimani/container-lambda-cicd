@@ -33,8 +33,8 @@ jobs:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v3
 
-    - name: Configure AWS credentials from Test account
-      uses: aws-actions/configure-aws-credentials@v1
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@master
       with:
         role-to-assume: arn:aws:iam::699028004073:role/demo/gha-role-for-container-lambda
         aws-region: ap-northeast-1
