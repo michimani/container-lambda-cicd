@@ -2,7 +2,7 @@ resource "aws_lambda_function" "container_lambda_function" {
   function_name = "container-lambda-function"
   role          = aws_iam_role.role_for_lambda.arn
   package_type  = "Image"
-  image_uri     = "${aws_ecr_repository.container_lambda_repository}:latest"
+  image_uri     = "${aws_ecr_repository.container_lambda_repository.repository_url}:latest"
   timeout       = 10
   memory_size   = 128
   environment {
