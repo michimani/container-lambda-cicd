@@ -98,7 +98,7 @@ jobs:
           --output text)
           aws lambda update-function-code \
           --function-name container-lambda-function-dev \
-          --image-uri "${AWS_ACCOUNT_ID}.dkr.ecr.ap-northeast-1.amazonaws.com/container-lambda-function:dev"
+          --image-uri "${AWS_ACCOUNT_ID}.dkr.ecr.ap-northeast-1.amazonaws.com/container-lambda-repository:dev"
 
       - name: check
         run: |
