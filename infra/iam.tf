@@ -53,8 +53,11 @@ resource "aws_iam_policy" "iam_policy_for_github_actions" {
           "lambda:UpdateFunctionCode",
           "lambda:Get*"
         ],
-        Effect   = "Allow",
-        Resource = aws_lambda_function.container_lambda_function.arn
+        Effect = "Allow",
+        Resource = [
+          aws_lambda_function.container_lambda_function.arn,
+          aws_lambda_function.container_lambda_function_dev.arn
+        ]
       }
     ]
   })
