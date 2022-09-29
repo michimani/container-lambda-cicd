@@ -7,7 +7,7 @@ resource "aws_lambda_function" "container_lambda_function" {
   memory_size   = 128
   environment {
     variables = {
-      "COLOR" = "red"
+      "ENV" = "prd"
     }
   }
 }
