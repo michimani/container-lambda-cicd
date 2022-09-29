@@ -1,0 +1,114 @@
+name: dev:deploy-lambda
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set up Go 1.19
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.19
+
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v3
+
+    - name: Get dependencies
+      working-directory: ./lambda
+      run: go install
+
+    - name: Test code
+      working-directory: ./lambda
+      run: go test -race ./... -shuffle=on
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: test
+    permissions: write-all
+    steps:
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v3
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@master
+      with:
+        role-to-assume: arn:aws:iam::699028004073:role/demo/gha-role-for-container-lambda
+        role-session-name: GitHubActions-${{ github.run_id }}
+        aws-region: ap-northeast-1
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Docker Login (to ECR)
+      run: |
+        AWS_ACCOUNT_ID=$(
+          aws sts get-caller-identity \
+          --query 'Account' \
+          --output text) \
+        && aws ecr get-login-password \
+          --region "${AWS_DEFAULT_REGION}" \
+          | docker login \
+          --username AWS \
+          --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com
+
+    - name: Docker Build
+      working-directory: ./lambda
+      run: docker build -t container-lambda-function .
+
+    - name: Create tag
+      working-directory: ./lambda
+      run: |
+        AWS_ACCOUNT_ID=$(
+          aws sts get-caller-identity \
+          --query 'Account' \
+          --output text)
+        docker tag \
+        container-lambda-function:latest \
+        "${AWS_ACCOUNT_ID}".dkr.ecr.ap-northeast-1.amazonaws.com/container-lambda-repository:dev
+
+    - name: Push to ECR
+      run: |
+        AWS_ACCOUNT_ID=$(
+          aws sts get-caller-identity \
+          --query 'Account' \
+          --output text)
+        aws ecr get-login-password \
+          --region "${AWS_DEFAULT_REGION}" \
+          | docker login \
+          --username AWS \
+          --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com
+        docker push "${AWS_ACCOUNT_ID}".dkr.ecr.ap-northeast-1.amazonaws.com/container-lambda-repository:dev
+
+  deploy-dev:
+    name: Deploy to Dev
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      id-token: write
+    steps:
+      - name: Configure AWS credentials from Test account
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::699028004073:role/demo/gha-role-for-container-lambda
+          aws-region: ap-northeast-1
+
+      # - name: deploy
+      #   run: |
+      #     AWS_ACCOUNT_ID=$(
+      #     aws sts get-caller-identity \
+      #     --query 'Account' \
+      #     --output text)
+      #     aws lambda update-function-code \
+      #     --function-name container-lambda-function \
+      #     --image-uri "${AWS_ACCOUNT_ID}.dkr.ecr.ap-northeast-1.amazonaws.com/container-lambda-function:dev"
+
+      - name: check
+        run: |
+          aws lambda get-function \
+          --function-name container-lambda-function \
+          --query 'Code.ResolvedImageUri'
