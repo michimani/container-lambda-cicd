@@ -36,6 +36,13 @@ resource "aws_iam_policy" "iam_policy_for_github_actions" {
     Statement = [
       {
         Action = [
+          "ecr:GetAuthorizationToken"
+        ]
+        Effect   = "Allow",
+        Resource = "*"
+      },
+      {
+        Action = [
           "ecr:*"
         ]
         Effect   = "Allow",
