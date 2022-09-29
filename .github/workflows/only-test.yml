@@ -12,7 +12,7 @@ on:
     paths:
       - '**.go'
       - 'go.mod'
-      - '.github/*'
+      - '.github/**/*.yml'
 
 jobs:
   test:
