@@ -23,6 +23,12 @@ AWS Lambda functions using container images.
 1. Build
 
     ```bash
+    docker build -t container-lambda-function -f Dockerfile_local .
+    ```
+    
+    For production. (use alpine base image)
+    
+    ```bash
     docker build -t container-lambda-function .
     ```
 
