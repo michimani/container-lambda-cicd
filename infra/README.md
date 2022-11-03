@@ -5,7 +5,6 @@ infra
 - Lambda Function
   - Role for the function
   - Policy for the role
-- SQS Queue
 
 
 ## Preparing
@@ -31,7 +30,7 @@ infra
     First, apply only resource of ECR Repository.
 
     ```bash
-    terraform apply --target=aws_ecr_repository.sqs_lambda_example_function
+    terraform apply --target=aws_ecr_repository.container_lambda_repository
     ```
 
     Then, push the first image to this repository following [lambda/README.md](../lambda/README.md).

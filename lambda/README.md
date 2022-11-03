@@ -58,11 +58,11 @@ After creating ECR Repository, push built image to there.
     ```bash
     docker tag \
     container-lambda-function:latest \
-    "${AWS_ACCOUNT_ID}".dkr.ecr.ap-northeast-1.amazonaws.com/container-lambda-repository:latest
+    "${AWS_ACCOUNT_ID}".dkr.ecr."${REGION}".amazonaws.com/container-lambda-repository:latest
     ```
 
 2. Push
 
     ```bash
-    docker push "${AWS_ACCOUNT_ID}".dkr.ecr.ap-northeast-1.amazonaws.com/container-lambda-repository:latest
+    docker push "${AWS_ACCOUNT_ID}".dkr.ecr."${REGION}".amazonaws.com/container-lambda-repository:latest
     ```
